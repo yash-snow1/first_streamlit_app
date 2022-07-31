@@ -29,6 +29,7 @@ fruits_to_show = my_fruit_list.loc[fruits_selected]
 streamlit.dataframe(my_fruit_list)
 streamlit.dataframe(fruits_to_show) 
 
+
 def get_fruityvice_data(this_fruit_choice):
       fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + fruit_choice)
       fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
@@ -67,12 +68,26 @@ streamlit.write('The user entered ', fruit_choice)
 
 # dont run anything past here while we troubleshoot
 # import snowflake.connector
-my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+# my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
 my_cur = my_cnx.cursor()
-my_cur.execute("select * from fruit_load_list")
-my_data_rows = my_cur.fetchall()
+# my_cur.execute("select * from fruit_load_list")
+# my_data_rows = my_cur.fetchall()
 streamlit.header("The fruit_load_list contains:")
-streamlit.dataframe(my_data_rows)
+# snowflake related functions
+def get_fruit_load_list():
+      with my_cnx.cursor() as my_cur:
+           my_cur.execute("Select * from fruit_load_list")
+           my_data_rows = my_cur.fetchall()
+            
+# Add a button to load a fruit
+if stream.button('Get fruit load list'):
+     my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+     my_data_rows = get_fruit_load_list()
+     streamlit.dataframe(my_data_rows)
+     
+
+           
+# streamlit.dataframe(my_data_rows)
 add_my_fruit = "jackfruit"
 
 
